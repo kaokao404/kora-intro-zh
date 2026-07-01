@@ -4,240 +4,560 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KORA — 你的 AI 伴侣</title>
+  <meta name="description" content="KORA 是一位随时在线的 AI 伴侣。聊天、求建议、分享想法，生活、感情、工作、美食、编程都可以聊。">
   <style>
     :root {
-      --bg: #f3f6f8;
-      --telegram: #229ed9;
-      --telegram-dark: #1c8bc2;
-      --text: #1f2937;
-      --muted: #5f6b7a;
-      --card: #ffffff;
-      --bubble: #effdde;
-      --radius: 22px;
-      --shadow: 0 12px 36px rgba(0,0,0,0.08);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.75;
-    }
-    .container { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+      /* Palette: cobalt primary on pure white, warm coral accent */
+      --k-primary: oklch(0.40 0.13 260);
+      --k-primary-hover: oklch(0.34 0.12 260);
+      --k-accent: oklch(0.62 0.16 45);
+      --k-accent-text: oklch(0.99 0.01 45);
+      --k-bg: oklch(1.00 0.00 0);
+      --k-surface: oklch(0.97 0.005 260);
+      --k-surface-2: oklch(0.94 0.01 260);
+      --k-ink: oklch(0.18 0.02 260);
+      --k-ink-light: oklch(0.38 0.03 260);
+      --k-muted: oklch(0.50 0.03 260);
+      --k-border: oklch(0.88 0.01 260);
 
-    header {
-      text-align: center;
-      padding: 70px 20px 50px;
-      background: linear-gradient(160deg, #e3f2fd 0%, #f3e5f5 100%);
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 28px;
+      --radius-full: 999px;
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration: 0.45s;
     }
-    .avatar {
-      width: 92px; height: 92px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      color: white;
+
+    @media (prefers-reduced-motion: reduce) {
+      :root { --duration: 0.001s; }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      background: var(--k-bg);
+      color: var(--k-ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    /* Typography */
+    .display {
+      font-size: clamp(2.4rem, 5.5vw, 4rem);
+      font-weight: 750;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+    }
+    .headline {
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      text-wrap: balance;
+    }
+    .lead {
+      font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+      line-height: 1.7;
+      color: var(--k-ink-light);
+      max-width: 54ch;
+      text-wrap: pretty;
+    }
+    .body { font-size: 1rem; line-height: 1.75; color: var(--k-ink-light); text-wrap: pretty; }
+    .label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--k-muted); }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: reveal var(--duration) var(--ease-out) forwards;
+    }
+    .reveal:nth-child(1) { animation-delay: 0.05s; }
+    .reveal:nth-child(2) { animation-delay: 0.12s; }
+    .reveal:nth-child(3) { animation-delay: 0.19s; }
+    .reveal:nth-child(4) { animation-delay: 0.26s; }
+
+    @keyframes reveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { animation: none; opacity: 1; transform: none; }
+    }
+
+    /* Header / Hero */
+    .hero {
+      position: relative;
+      padding: clamp(64px, 10vw, 120px) 0 clamp(80px, 10vw, 120px);
+      background:
+        radial-gradient(ellipse 80% 60% at 90% 10%, oklch(0.92 0.03 260 / 0.35), transparent 60%),
+        radial-gradient(ellipse 70% 50% at 10% 90%, oklch(0.94 0.04 45 / 0.18), transparent 55%),
+        var(--k-bg);
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    @media (min-width: 880px) {
+      .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 72px; }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      background: var(--k-surface);
+      border: 1px solid var(--k-border);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--k-ink-light);
+      margin-bottom: 22px;
+    }
+    .hero-badge::before {
+      content: "";
+      width: 8px; height: 8px;
+      background: var(--k-accent);
       border-radius: 50%;
+      box-shadow: 0 0 0 3px oklch(0.62 0.16 45 / 0.18);
+    }
+
+    .hero h1 { margin-bottom: 20px; }
+    .hero .lead { margin-bottom: 32px; }
+
+    .cta-group { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+    .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
-      font-weight: 700;
-      margin-bottom: 18px;
-      box-shadow: 0 10px 30px rgba(99,102,241,0.28);
+      gap: 10px;
+      padding: 15px 30px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background 0.2s;
     }
-    h1 { font-size: 2.2rem; margin-bottom: 10px; }
-    .tagline { color: var(--muted); font-size: 1.1rem; max-width: 500px; margin: 0 auto; }
+    .btn:active { transform: scale(0.98); }
 
-    .chat-intro {
-      margin-top: 30px;
-      text-align: left;
+    .btn-primary {
+      background: var(--k-primary);
+      color: #fff;
+      box-shadow: 0 10px 28px oklch(0.40 0.13 260 / 0.28);
     }
-    .bubble {
-      display: inline-block;
-      background: var(--bubble);
-      padding: 18px 22px;
-      border-radius: var(--radius);
-      border-bottom-left-radius: 6px;
-      max-width: 90%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    .btn-primary:hover {
+      background: var(--k-primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px oklch(0.40 0.13 260 / 0.34);
     }
-    .bubble p + p { margin-top: 12px; }
-    .bubble strong { color: #3b4d3a; }
 
-    .cta {
-      display: inline-flex;
+    .btn-secondary {
+      background: transparent;
+      color: var(--k-ink);
+      border: 1.5px solid var(--k-border);
+    }
+    .btn-secondary:hover { background: var(--k-surface); border-color: var(--k-border); }
+
+    .telegram-icon {
+      width: 18px; height: 18px;
+      fill: currentColor;
+    }
+
+    .hero-note {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: var(--k-muted);
+    }
+
+    /* Phone mockup */
+    .phone {
+      justify-self: center;
+      width: min(320px, 90%);
+      background: var(--k-ink);
+      border-radius: 44px;
+      padding: 12px;
+      box-shadow:
+        0 40px 80px oklch(0.18 0.02 260 / 0.22),
+        0 0 0 1px oklch(0.18 0.02 260 / 0.08);
+      transform: perspective(1200px) rotateY(-8deg) rotateX(4deg);
+      transition: transform 0.5s var(--ease-out);
+    }
+    .phone:hover { transform: perspective(1200px) rotateY(-4deg) rotateX(2deg) translateY(-6px); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .phone { transform: none; }
+      .phone:hover { transform: none; }
+    }
+
+    .phone-screen {
+      background: var(--k-bg);
+      border-radius: 34px;
+      overflow: hidden;
+      min-height: 460px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-header {
+      display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 28px;
-      padding: 15px 34px;
-      background: var(--telegram);
-      color: white;
-      text-decoration: none;
-      border-radius: 999px;
-      font-weight: 600;
-      font-size: 1.05rem;
-      box-shadow: 0 10px 28px rgba(34,158,217,0.32);
-      transition: transform 0.15s, box-shadow 0.15s;
+      padding: 16px 18px;
+      background: var(--k-surface);
+      border-bottom: 1px solid var(--k-border);
     }
-    .cta:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(34,158,217,0.38); }
-    .cta-note { margin-top: 12px; font-size: 0.92rem; color: var(--muted); }
-
-    section { padding: 56px 0; }
-    h2 { font-size: 1.55rem; margin-bottom: 26px; text-align: center; }
-
-    .features {
+    .phone-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--k-primary), oklch(0.55 0.18 280));
+      color: #fff;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      place-items: center;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .phone-name { font-weight: 700; font-size: 0.95rem; }
+    .phone-status { font-size: 0.75rem; color: var(--k-muted); }
+
+    .phone-chat {
+      flex: 1;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg {
+      max-width: 86%;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      animation: popIn 0.4s var(--ease-out) backwards;
+    }
+    .msg:nth-child(1) { animation-delay: 0.35s; }
+    .msg:nth-child(2) { animation-delay: 0.55s; }
+    .msg:nth-child(3) { animation-delay: 0.75s; }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .msg { animation: none; }
+    }
+
+    .msg-bot {
+      align-self: flex-start;
+      background: var(--k-surface);
+      color: var(--k-ink);
+      border-bottom-left-radius: 6px;
+    }
+    .msg-user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--k-primary), oklch(0.46 0.15 265));
+      color: #fff;
+      border-bottom-right-radius: 6px;
+    }
+
+    /* Sections */
+    .section { padding: clamp(72px, 10vw, 120px) 0; }
+    .section-surface { background: var(--k-surface); }
+
+    .section-header { max-width: 640px; margin-bottom: 48px; }
+    .section-header .headline { margin-bottom: 14px; }
+
+    /* Topics */
+    .topics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 18px;
     }
-    .feature {
-      background: var(--card);
-      padding: 26px 22px;
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      transition: transform 0.15s;
+    .topic {
+      display: flex;
+      gap: 16px;
+      padding: 24px;
+      background: var(--k-bg);
+      border: 1px solid var(--k-border);
+      border-radius: var(--radius-md);
+      transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), border-color 0.2s;
     }
-    .feature:hover { transform: translateY(-4px); }
-    .feature .icon { font-size: 1.7rem; margin-bottom: 10px; }
-    .feature h3 { font-size: 1.05rem; margin-bottom: 6px; }
-    .feature p { color: var(--muted); font-size: 0.94rem; line-height: 1.6; }
+    .topic:hover {
+      transform: translateY(-4px);
+      border-color: oklch(0.40 0.13 260 / 0.35);
+      box-shadow: 0 16px 40px oklch(0.18 0.02 260 / 0.08);
+    }
+    .topic-icon {
+      flex-shrink: 0;
+      width: 46px; height: 46px;
+      border-radius: 14px;
+      background: var(--k-surface-2);
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+    }
+    .topic h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+    .topic p { font-size: 0.95rem; color: var(--k-muted); line-height: 1.6; }
 
+    /* Quote */
+    .quote-block {
+      background: var(--k-primary);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: clamp(40px, 6vw, 64px);
+      position: relative;
+      overflow: hidden;
+    }
+    .quote-block::before {
+      content: "";
+      position: absolute;
+      top: -40%;
+      right: -10%;
+      width: 320px; height: 320px;
+      background: var(--k-accent);
+      border-radius: 50%;
+      opacity: 0.18;
+      filter: blur(60px);
+    }
+    .quote-block p {
+      position: relative;
+      font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+      line-height: 1.6;
+      max-width: 46ch;
+      font-weight: 500;
+    }
+    .quote-block cite {
+      position: relative;
+      display: block;
+      margin-top: 22px;
+      font-size: 0.95rem;
+      font-style: normal;
+      opacity: 0.85;
+    }
+
+    /* Steps */
     .steps {
-      background: var(--card);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      padding: 34px 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      counter-reset: step;
     }
     .step {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 18px 0;
-      border-bottom: 1px solid #f1f5f9;
+      position: relative;
+      padding: 32px 28px;
+      background: var(--k-bg);
+      border: 1px solid var(--k-border);
+      border-radius: var(--radius-md);
     }
-    .step:last-child { border-bottom: none; }
-    .step-num {
-      flex-shrink: 0;
-      width: 34px; height: 34px;
-      background: #e0f2fe;
-      color: var(--telegram);
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      top: -18px;
+      left: 28px;
+      width: 36px; height: 36px;
+      background: var(--k-primary);
+      color: #fff;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      place-items: center;
       font-weight: 700;
+      font-size: 0.95rem;
+      box-shadow: 0 6px 16px oklch(0.40 0.13 260 / 0.28);
     }
-    .step h4 { font-size: 1.02rem; margin-bottom: 3px; }
-    .step p { color: var(--muted); font-size: 0.94rem; }
+    .step h3 { font-size: 1.1rem; font-weight: 700; margin: 8px 0 8px; }
+    .step p { font-size: 0.95rem; color: var(--k-muted); line-height: 1.6; }
 
-    .quote {
-      background: var(--card);
-      border-left: 4px solid var(--telegram);
-      padding: 22px 26px;
-      border-radius: 0 18px 18px 0;
-      box-shadow: var(--shadow);
-      font-style: italic;
-      color: var(--muted);
-    }
-    .quote strong { color: var(--text); font-style: normal; }
-
-    footer {
+    /* Final CTA */
+    .final-cta {
       text-align: center;
-      padding: 40px 20px 60px;
-      color: var(--muted);
-      font-size: 0.88rem;
+      padding: clamp(64px, 9vw, 100px) 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 120%, oklch(0.40 0.13 260 / 0.12), transparent 60%),
+        var(--k-bg);
+    }
+    .final-cta h2 { margin-bottom: 16px; }
+    .final-cta .lead { margin: 0 auto 32px; }
+
+    /* Footer */
+    footer {
+      padding: 40px 0 60px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--k-muted);
     }
 
+    /* Focus visible */
+    :focus-visible {
+      outline: 3px solid oklch(0.40 0.13 260 / 0.45);
+      outline-offset: 3px;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .btn, .topic, .phone { transition: none; }
+    }
+
+    /* Small screens */
     @media (max-width: 480px) {
-      h1 { font-size: 1.85rem; }
-      header { padding: 55px 20px 40px; }
-      .steps { padding: 26px 20px; }
+      .display { font-size: 2.1rem; }
+      .hero-badge { font-size: 0.8rem; }
+      .phone { transform: none; }
+      .phone:hover { transform: none; }
+      .topics { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="avatar">K</div>
-      <h1>KORA — 你的 AI 伴侣</h1>
-      <p class="tagline">随时在线，愿意倾听、给建议，陪你聊任何话题。</p>
-
-      <div class="chat-intro">
-        <div class="bubble">
-          <p><strong>嘿！我是 KORA。</strong> 你可以把我当成一个全能朋友：想聊天、求建议，或者单纯分享想法，都可以找我。</p>
-          <p>我们能聊生活、感情、工作、旅行、美食、时尚、心理健康、编程……当然还有更多。</p>
-          <p>晚餐计划、深夜思绪、写代码卡壳了，甚至想听几个笑话——我都在。</p>
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="hero-badge reveal">随时在线的 AI 伴侣</div>
+        <h1 class="display reveal">KORA<br><span style="color: var(--k-primary);">愿意陪你聊任何事</span></h1>
+        <p class="lead reveal">
+          像一位随时在线的朋友，KORA 可以倾听你的想法、给你建议，或者只是随便聊聊。生活、感情、工作、旅行、美食、时尚、心理健康、编程——这里没有固定剧本。
+        </p>
+        <div class="cta-group reveal">
+          <a class="btn btn-primary" href="https://t.me/Kora_china_bot" target="_blank" rel="noopener">
+            <svg class="telegram-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.503-1.358 8.627-.168.9-.5 1.201-.82 1.23-.697.065-1.226-.461-1.901-.903-1.056-.692-1.653-1.122-2.678-1.799-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.301.48-.428-.009-1.252-.242-1.865-.442-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.477-1.635.099-.002.321.023.465.141.121.099.154.232.17.325.015.093.034.305.019.471z"/>
+            </svg>
+            在 Telegram 打开 KORA
+          </a>
+          <a class="btn btn-secondary" href="#how-it-works">了解怎么开始</a>
         </div>
+        <p class="hero-note reveal">搜索 <strong>@Kora_china_bot</strong>，点击「开始」即可对话</p>
       </div>
 
-      <a class="cta" href="https://t.me/Kora_china_bot" target="_blank" rel="noopener">
-        在 Telegram 打开 KORA
-      </a>
-      <p class="cta-note">搜索 <strong>@Kora_china_bot</strong>，点击「开始」即可对话</p>
+      <div class="phone reveal" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <div class="phone-avatar">K</div>
+            <div>
+              <div class="phone-name">KORA</div>
+              <div class="phone-status">在线</div>
+            </div>
+          </div>
+          <div class="phone-chat">
+            <div class="msg msg-bot">嘿！我是 KORA。想聊天、求建议，或者单纯分享想法，都可以找我。👋</div>
+            <div class="msg msg-user">深夜有点睡不着……</div>
+            <div class="msg msg-bot">我懂。随便说点什么吧，我都在。也可以给你讲两三个笑话。😄</div>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
-  <section>
+  <section class="section section-surface" id="topics">
     <div class="container">
-      <h2>KORA 能陪你做什么</h2>
-      <div class="features">
-        <div class="feature">
-          <div class="icon">👂</div>
-          <h3>随时倾听</h3>
-          <p>24/7 在线，不用预约，不用在意时间，想聊就聊。</p>
-        </div>
-        <div class="feature">
-          <div class="icon">🧭</div>
-          <h3>给建议</h3>
-          <p>感情、工作、学习、人生选择，陪你梳理思路，而不是说教。</p>
-        </div>
-        <div class="feature">
-          <div class="icon">🍝</div>
-          <h3>生活灵感</h3>
-          <p>晚餐吃什么、旅行计划、穿搭建议，甚至一道正宗的 pasta alla norma。</p>
-        </div>
-        <div class="feature">
-          <div class="icon">😄</div>
-          <h3>轻松陪伴</h3>
-          <p>深夜思绪、想吐槽、想听两三个笑话，KORA 都能接住。</p>
-        </div>
+      <div class="section-header reveal">
+        <p class="label">可以聊什么</p>
+        <h2 class="headline">从生活琐事到深夜思绪，聊什么都行</h2>
+        <p class="body">KORA 没有固定话术。你可以像对朋友一样开口，它会顺着你的话题回应。</p>
+      </div>
+
+      <div class="topics">
+        <article class="topic reveal">
+          <div class="topic-icon">💬</div>
+          <div>
+            <h3>随时倾听</h3>
+            <p>24/7 在线，不用预约，随时可以说说话。</p>
+          </div>
+        </article>
+
+        <article class="topic reveal">
+          <div class="topic-icon">🧭</div>
+          <div>
+            <h3>给建议</h3>
+            <p>感情、工作、学习、人生选择，陪你梳理思路。</p>
+          </div>
+        </article>
+
+        <article class="topic reveal">
+          <div class="topic-icon">🍝</div>
+          <div>
+            <h3>生活灵感</h3>
+            <p>晚餐计划、旅行、穿搭，甚至一道 pasta alla norma。</p>
+          </div>
+        </article>
+
+        <article class="topic reveal">
+          <div class="topic-icon">😄</div>
+          <div>
+            <h3>轻松陪伴</h3>
+            <p>深夜思绪、想吐槽、想听笑话，KORA 都能接住。</p>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <section style="padding-top: 0;">
+  <section class="section">
     <div class="container">
-      <div class="quote">
-        "Open to discuss anything: dinner plans, coding, late night thoughts."
-        <br><br>
-        <strong>KORA 的态度：</strong> 什么话题都可以聊，没有固定剧本，只要你愿意开口。
+      <div class="quote-block reveal">
+        <p>"Open to discuss anything: dinner plans, coding, late night thoughts."</p>
+        <cite>— KORA 的态度：没有固定剧本，只要你愿意开口。</cite>
       </div>
     </div>
   </section>
 
-  <section>
+  <section class="section section-surface" id="how-it-works">
     <div class="container">
-      <h2>三步开始体验</h2>
+      <div class="section-header reveal">
+        <p class="label">开始体验</p>
+        <h2 class="headline">三步开始和 KORA 聊天</h2>
+      </div>
+
       <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div>
-            <h4>下载 Telegram</h4>
-            <p>手机或电脑安装 Telegram，免费注册一个账号。</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div>
-            <h4>搜索 @Kora_china_bot</h4>
-            <p>在 Telegram 搜索框输入 <strong>@Kora_china_bot</strong>，找到 KORA。</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div>
-            <h4>点击「开始」对话</h4>
-            <p>像和朋友发消息一样，直接说你想聊的。</p>
-          </div>
-        </div>
+        <article class="step reveal">
+          <h3>下载 Telegram</h3>
+          <p>在手机或电脑安装 Telegram，免费注册一个账号。</p>
+        </article>
+
+        <article class="step reveal">
+          <h3>搜索 @Kora_china_bot</h3>
+          <p>在 Telegram 搜索框输入 <strong>@Kora_china_bot</strong>。</p>
+        </article>
+
+        <article class="step reveal">
+          <h3>点击「开始」对话</h3>
+          <p>像和朋友发消息一样，直接说你想聊的。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div class="container">
+      <h2 class="headline reveal">现在就去 Telegram 找 KORA 聊聊</h2>
+      <p class="lead reveal">不用安装新 App，不用付费，打开 Telegram 就能开始。</p>
+      <div class="reveal">
+        <a class="btn btn-primary" href="https://t.me/Kora_china_bot" target="_blank" rel="noopener">
+          <svg class="telegram-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.503-1.358 8.627-.168.9-.5 1.201-.82 1.23-.697.065-1.226-.461-1.901-.903-1.056-.692-1.653-1.122-2.678-1.799-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.301.48-.428-.009-1.252-.242-1.865-.442-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.477-1.635.099-.002.321.023.465.141.121.099.154.232.17.325.015.093.034.305.019.471z"/>
+          </svg>
+          打开 @Kora_china_bot
+        </a>
       </div>
     </div>
   </section>
