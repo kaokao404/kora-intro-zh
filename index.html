@@ -17,7 +17,7 @@
       --k-surface-2: oklch(0.94 0.01 260);
       --k-ink: oklch(0.18 0.02 260);
       --k-ink-light: oklch(0.38 0.03 260);
-      --k-muted: oklch(0.50 0.03 260);
+      --k-muted: oklch(0.42 0.03 260);
       --k-border: oklch(0.88 0.01 260);
 
       --radius-sm: 12px;
@@ -73,7 +73,7 @@
       text-wrap: pretty;
     }
     .body { font-size: 1rem; line-height: 1.75; color: var(--k-ink-light); text-wrap: pretty; }
-    .label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--k-muted); }
+    .label { font-size: 0.9rem; font-weight: 600; color: var(--k-muted); }
 
     /* Reveal animation */
     .reveal {
@@ -289,34 +289,27 @@
     /* Topics */
     .topics {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
+      gap: 0;
+      border-top: 1px solid var(--k-border);
     }
     .topic {
-      display: flex;
-      gap: 16px;
-      padding: 24px;
-      background: var(--k-bg);
-      border: 1px solid var(--k-border);
-      border-radius: var(--radius-md);
-      transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), border-color 0.2s;
-    }
-    .topic:hover {
-      transform: translateY(-4px);
-      border-color: oklch(0.40 0.13 260 / 0.35);
-      box-shadow: 0 16px 40px oklch(0.18 0.02 260 / 0.08);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 20px;
+      align-items: baseline;
+      padding: 26px 0;
+      border-bottom: 1px solid var(--k-border);
     }
     .topic-icon {
-      flex-shrink: 0;
-      width: 46px; height: 46px;
-      border-radius: 14px;
+      width: 40px; height: 40px;
+      border-radius: 12px;
       background: var(--k-surface-2);
       display: grid;
       place-items: center;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
     }
-    .topic h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
-    .topic p { font-size: 0.95rem; color: var(--k-muted); line-height: 1.6; }
+    .topic h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+    .topic p { font-size: 1rem; color: var(--k-muted); line-height: 1.65; max-width: 60ch; }
 
     /* Quote */
     .quote-block {
@@ -357,35 +350,33 @@
     /* Steps */
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 24px;
+      gap: 0;
       counter-reset: step;
+      border-top: 1px solid var(--k-border);
     }
     .step {
-      position: relative;
-      padding: 32px 28px;
-      background: var(--k-bg);
-      border: 1px solid var(--k-border);
-      border-radius: var(--radius-md);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 20px;
+      align-items: baseline;
+      padding: 26px 0;
+      border-bottom: 1px solid var(--k-border);
     }
     .step::before {
       counter-increment: step;
       content: counter(step);
-      position: absolute;
-      top: -18px;
-      left: 28px;
-      width: 36px; height: 36px;
+      width: 40px; height: 40px;
       background: var(--k-primary);
       color: #fff;
       border-radius: 50%;
       display: grid;
       place-items: center;
       font-weight: 700;
-      font-size: 0.95rem;
-      box-shadow: 0 6px 16px oklch(0.40 0.13 260 / 0.28);
+      font-size: 1rem;
+      box-shadow: 0 6px 18px oklch(0.40 0.13 260 / 0.22);
     }
-    .step h3 { font-size: 1.1rem; font-weight: 700; margin: 8px 0 8px; }
-    .step p { font-size: 0.95rem; color: var(--k-muted); line-height: 1.6; }
+    .step h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+    .step p { font-size: 1rem; color: var(--k-muted); line-height: 1.65; max-width: 60ch; }
 
     /* Final CTA */
     .final-cta {
