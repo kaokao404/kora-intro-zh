@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KORA — 你的 AI 伴侣</title>
-  <meta name="description" content="KORA 是一位随时在线的 AI 伴侣。聊天、求建议、分享想法，生活、感情、工作、美食、编程都可以聊。">
+  <title>KORA — 你在中国的本地朋友</title>
+  <meta name="description" content="KORA 是你在中国的本地朋友。用高德实时数据帮你找本地人真去的餐厅、酒吧、咖啡馆，解决出行、支付、VPN 等生存刚需，避开旅游陷阱。">
   <style>
     :root {
       /* Palette: cobalt primary on pure white, warm coral accent */
@@ -347,6 +347,42 @@
       opacity: 0.85;
     }
 
+    /* Example */
+    .example {
+      background: var(--k-bg);
+      border: 1px solid var(--k-border);
+      border-radius: var(--radius-lg);
+      padding: clamp(28px, 4vw, 40px);
+    }
+    .example-prompt {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      color: var(--k-ink);
+      background: var(--k-surface-2);
+      padding: 18px 22px;
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--k-accent);
+      margin-bottom: 18px;
+    }
+    .example-result p { color: var(--k-muted); margin-bottom: 12px; }
+    .example-result ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+    .example-result li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.98rem;
+      color: var(--k-ink-light);
+    }
+    .example-result li::before {
+      content: "→";
+      color: var(--k-primary);
+      font-weight: 700;
+    }
+
     /* Steps */
     .steps {
       display: grid;
@@ -415,7 +451,6 @@
       .hero-badge { font-size: 0.8rem; }
       .phone { transform: none; }
       .phone:hover { transform: none; }
-      .topics { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -423,10 +458,10 @@
   <header class="hero">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <div class="hero-badge reveal">随时在线的 AI 伴侣</div>
-        <h1 class="display reveal">KORA<br><span style="color: var(--k-primary);">愿意陪你聊任何事</span></h1>
+        <div class="hero-badge reveal">你在中国那个见多识广的本地朋友</div>
+        <h1 class="display reveal">KORA<br><span style="color: var(--k-primary);">帮你找真正值得去的地方</span></h1>
         <p class="lead reveal">
-          像一位随时在线的朋友，KORA 可以倾听你的想法、给你建议，或者只是随便聊聊。生活、感情、工作、旅行、美食、时尚、心理健康、编程——这里没有固定剧本。
+          餐厅、酒吧、咖啡馆、城市漫步路线——KORA 用高德实时数据给你本地人真去的推荐。查不到就老实说，绝不瞎编；还会像挑剔的老饕一样，帮你避开网红店和旅游陷阱。
         </p>
         <div class="cta-group reveal">
           <a class="btn btn-primary" href="https://t.me/Kora_china_bot" target="_blank" rel="noopener">
@@ -435,7 +470,7 @@
             </svg>
             在 Telegram 打开 KORA
           </a>
-          <a class="btn btn-secondary" href="#how-it-works">了解怎么开始</a>
+          <a class="btn btn-secondary" href="#how-it-works">看怎么用</a>
         </div>
         <p class="hero-note reveal">搜索 <strong>@Kora_china_bot</strong>，点击「开始」即可对话</p>
       </div>
@@ -450,9 +485,9 @@
             </div>
           </div>
           <div class="phone-chat">
-            <div class="msg msg-bot">嘿！我是 KORA。想聊天、求建议，或者单纯分享想法，都可以找我。👋</div>
-            <div class="msg msg-user">深夜有点睡不着……</div>
-            <div class="msg msg-bot">我懂。随便说点什么吧，我都在。也可以给你讲两三个笑话。😄</div>
+            <div class="msg msg-user">我在静安寺，想吃本帮菜，人均 150 以内。</div>
+            <div class="msg msg-bot">收到。我给你 2-3 家本地人真去的店，带地址、电话、营业时间和高德导航链接。🍜</div>
+            <div class="msg msg-bot">第一家：老吉士（天平路店），本帮菜老店，人均 130，现在营业中。</div>
           </div>
         </div>
       </div>
@@ -462,41 +497,49 @@
   <section class="section section-surface" id="topics">
     <div class="container">
       <div class="section-header reveal">
-        <p class="label">可以聊什么</p>
-        <h2 class="headline">从生活琐事到深夜思绪，聊什么都行</h2>
-        <p class="body">KORA 没有固定话术。你可以像对朋友一样开口，它会顺着你的话题回应。</p>
+        <p class="label">KORA 擅长这些</p>
+        <h2 class="headline">从吃到行，解决你在中国的真实问题</h2>
+        <p class="body">不是通用 AI 式的泛泛回答。KORA 围绕「你在哪、想要什么、预算忌口」这三件事，给你可导航、可验证的推荐。</p>
       </div>
 
       <div class="topics">
         <article class="topic reveal">
-          <div class="topic-icon">💬</div>
+          <div class="topic-icon">🍜</div>
           <div>
-            <h3>随时倾听</h3>
-            <p>24/7 在线，不用预约，随时可以说说话。</p>
+            <h3>找吃的</h3>
+            <p>本地人真去的餐厅、咖啡、深夜食堂，带地址、电话、营业时间。</p>
           </div>
         </article>
 
         <article class="topic reveal">
-          <div class="topic-icon">🧭</div>
+          <div class="topic-icon">🍸</div>
           <div>
-            <h3>给建议</h3>
-            <p>感情、工作、学习、人生选择，陪你梳理思路。</p>
+            <h3>找喝的 & 夜生活</h3>
+            <p>按你的 vibe 匹配酒吧、酒馆、live house，避开游客聚集区。</p>
           </div>
         </article>
 
         <article class="topic reveal">
-          <div class="topic-icon">🍝</div>
+          <div class="topic-icon">🚕</div>
           <div>
-            <h3>生活灵感</h3>
-            <p>晚餐计划、旅行、穿搭，甚至一道 pasta alla norma。</p>
+            <h3>出行导航</h3>
+            <p>打车、地铁、步行路线，直接给你高德直达链接，不迷路。</p>
           </div>
         </article>
 
         <article class="topic reveal">
-          <div class="topic-icon">😄</div>
+          <div class="topic-icon">💳</div>
           <div>
-            <h3>轻松陪伴</h3>
-            <p>深夜思绪、想吐槽、想听笑话，KORA 都能接住。</p>
+            <h3>生存刚需</h3>
+            <p>支付宝/微信支付怎么用、VPN、现金、机场进城，顺手问就行。</p>
+          </div>
+        </article>
+
+        <article class="topic reveal">
+          <div class="topic-icon">🚶</div>
+          <div>
+            <h3>城市漫步</h3>
+            <p>武康路、愚园路这种适合瞎逛的路线，以及「明信片背后」的隐藏小店。</p>
           </div>
         </article>
       </div>
@@ -506,33 +549,63 @@
   <section class="section">
     <div class="container">
       <div class="quote-block reveal">
-        <p>"Open to discuss anything: dinner plans, coding, late night thoughts."</p>
-        <cite>— KORA 的态度：没有固定剧本，只要你愿意开口。</cite>
+        <p>"Two or three picks, always a reason."</p>
+        <cite>— KORA 不会给你 20 个选择让你自己筛。它给你 2-3 个真正值得去的，并告诉你为什么。</cite>
       </div>
     </div>
   </section>
 
-  <section class="section section-surface" id="how-it-works">
+  <section class="section section-surface" id="example">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="label">一次真实对话</p>
+        <h2 class="headline">像发消息一样简单</h2>
+        <p class="body">不用背指令，不用写 prompt。直接像跟本地朋友说话。</p>
+      </div>
+
+      <div class="example reveal">
+        <div class="example-prompt">
+          我在静安寺，想吃本帮菜，人均 150 以内。
+        </div>
+        <div class="example-result">
+          <p>KORA 会回你类似这样：</p>
+          <ul>
+            <li>老吉士（天平路店）：本帮菜老店，人均 130，现在营业中，带高德导航</li>
+            <li>海金滋（进贤路店）：浓油赤酱路线，人均 120，电话可订位</li>
+            <li>兰心餐厅（巨鹿路店）：更市井的本帮小馆，人均 90，适合临时起意</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works">
     <div class="container">
       <div class="section-header reveal">
         <p class="label">开始体验</p>
-        <h2 class="headline">三步开始和 KORA 聊天</h2>
+        <h2 class="headline">告诉 KORA 三件事，就能开挖</h2>
       </div>
 
       <div class="steps">
         <article class="step reveal">
-          <h3>下载 Telegram</h3>
-          <p>在手机或电脑安装 Telegram，免费注册一个账号。</p>
+          <div>
+            <h3>你在哪？</h3>
+            <p>城市 + 大概位置，或者直接发定位 📍</p>
+          </div>
         </article>
 
         <article class="step reveal">
-          <h3>搜索 @Kora_china_bot</h3>
-          <p>在 Telegram 搜索框输入 <strong>@Kora_china_bot</strong>。</p>
+          <div>
+            <h3>想要什么？</h3>
+            <p>吃饭 / 咖啡 / 酒吧 / 城市漫步 / 出行 / 生存刚需</p>
+          </div>
         </article>
 
         <article class="step reveal">
-          <h3>点击「开始」对话</h3>
-          <p>像和朋友发消息一样，直接说你想聊的。</p>
+          <div>
+            <h3>预算 & 忌口？</h3>
+            <p>人均多少、辣不辣、素食、要不要安静适合聊天……</p>
+          </div>
         </article>
       </div>
     </div>
@@ -540,8 +613,8 @@
 
   <section class="final-cta">
     <div class="container">
-      <h2 class="headline reveal">现在就去 Telegram 找 KORA 聊聊</h2>
-      <p class="lead reveal">不用安装新 App，不用付费，打开 Telegram 就能开始。</p>
+      <h2 class="headline reveal">现在就去 Telegram 找 KORA</h2>
+      <p class="lead reveal">不用安装新 App，不用付费。打开 Telegram，搜索 @Kora_china_bot，像跟本地朋友一样发消息。</p>
       <div class="reveal">
         <a class="btn btn-primary" href="https://t.me/Kora_china_bot" target="_blank" rel="noopener">
           <svg class="telegram-icon" viewBox="0 0 24 24" aria-hidden="true">
